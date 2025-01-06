@@ -1,28 +1,40 @@
-import React from 'react';
-import { BrowserRouter as Router , Route, Routes, Link } from 'react-router-dom';
-import Home from './Home';
-import Aboutus from './Aboutus';
-import Contactus from './Contactus';
+import React, { useState, useMemo, useEffect } from 'react';
 
 function App() {
-  return (
-    <Router>
+  let [Number, setNumber] = useState(0);
+  let [dark, setDark] = useState(false);
+
+  let doubleNum = useMemo(()=>{
+    return slowFunction(Number);
+  },[Number])
+
+  let themestyle = useMemo(()=>{
+    return {
+      backgroundColor: dark ? 'black' : 'white',
+      color: dark ? 'white' : 'black'
+    }
+  },[dark])
+
+  useEffect(()=>{
+    console.log("Theme Changed");
+  },[themestyle])
+
+
+    return (
       <div>
-        <nav>
-          <ol>
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/AboutUs">About Us</Link></li>
-            <li><Link to="/ContactUs">Contact Us</Link></li>
-          </ol>
-        </nav>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/AboutUs" element={<Aboutus />} />
-          <Route path="/ContactUs" element={<Contactus />} />
-        </Routes>
+        <input type="number" value={Number} onChange={(e)=>setNumber(e.target.value)} />
+        <button onClick={()=>setDark((val)=>!val)}>Change Theme</button>
+        <div style={themestyle}>{doubleNum}</div>
+
       </div>
-    </Router>
+      
   );
 }
 
 export default App;
+
+function slowFunction(num){
+  console.log("slow function");
+  for(let i=0; i<1000000000; i++){}
+  return num*2;
+}
